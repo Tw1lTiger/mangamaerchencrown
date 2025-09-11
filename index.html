@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Корона Мёрхен</title>
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+  <div class="container">
+    <div class="banner-crop">
+      <img src="img/banner.jpeg" alt="Баннер">
+    </div>
+    <div class="info">
+      <div class="poster">
+        <img src="img/poster.jpg" alt="Постер">
+      </div>
+      <div class="desc">
+        <h1>Корона Мёрхен<br><em>(Сказка о Короне)</em></h1>
+        <p><strong>Автор:</strong> Aka Akasaka</p>
+        <p>
+          Рапунцель - юная девушка, которая живет на вершине высокой башни и ничего не знает о внешнем мире. Однажды она встречает мальчика по имени Микель, который забирается на башню, и их судьба изменить мир начинает разворачиваться!
+        </p>
+        <div class="buttons">
+          <button onclick="startReading()">Читать</button>
+          <a href="https://t.me/tw1lti" target="_blank"><button>Телеграм</button></a>
+        </div>
+      </div>
+    </div>
+    <div id="chapters" class="chapters"></div>
+  </div>
+  <div id="reader" class="reader" style="display:none;">
+    <div class="reader-inner">
+      <button class="nav-btn" id="prev-chapter" onclick="prevChapter()">← Предыдущая глава</button>
+      <button class="nav-btn" onclick="closeReader()">Назад к списку</button>
+      <button class="nav-btn" id="next-chapter" onclick="nextChapter()">Следующая глава →</button>
+    </div>
+    <div id="pages"></div>
+    <div class="reader-inner">
+      <button class="nav-btn" id="prev-chapter-bottom" onclick="prevChapter()">← Предыдущая глава</button>
+      <button class="nav-btn" onclick="closeReader()">Назад к списку</button>
+      <button class="nav-btn" id="next-chapter-bottom" onclick="nextChapter()">Следующая глава →</button>
+    </div>
+  </div>
+  <script src="scripts/main.js"></script>
+</body>
+</html>

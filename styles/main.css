@@ -1,0 +1,414 @@
+/* Современный дизайн в стиле популярных манга-сайтов */
+
+body {
+  background: radial-gradient(ellipse at 60% 0%, #23243a 60%, #181926 100%);
+  color: #e6eaf3;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  letter-spacing: 0.01em;
+}
+
+/* Плавная прокрутка для всей страницы */
+html {
+  scroll-behavior: smooth;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px 0 24px;
+}
+
+.banner-crop {
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  border-radius: 24px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  background: #23243a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.banner-crop img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  filter: brightness(0.85) blur(0.5px) saturate(1.1);
+  transition: filter 0.3s;
+}
+
+/* Анимация появления для главной информации */
+.info, .chapters, .reader {
+  animation: fadeInUp 0.7s cubic-bezier(.23,1.01,.32,1) both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 40px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.info {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 48px;
+  align-items: flex-start;
+  background: rgba(24, 26, 48, 0.92);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.13);
+  padding: 40px 48px 40px 48px;
+  position: relative;
+}
+
+.poster {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.poster img {
+  width: 260px;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+  border: 2px solid #23243a;
+  background: #23243a;
+  margin: 0;
+}
+
+.desc {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0 0 32px;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.desc h1 {
+  margin-top: 0;
+  font-size: 2.7em;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 2px 12px #0006;
+  margin-bottom: 0.2em;
+}
+
+.desc em {
+  color: #6ad1ff;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 0.7em;
+}
+
+.desc p {
+  color: #bfc7d5;
+  font-size: 1.13em;
+  margin-bottom: 18px;
+  margin-top: 0;
+}
+
+.buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.buttons button,
+.buttons a > button {
+  background: linear-gradient(90deg, #3a7afe 0%, #6ad1ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 14px 44px;
+  font-size: 1.18em;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #3a7afe33;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  outline: none;
+}
+
+.buttons button:hover,
+.buttons a > button:hover {
+  background: linear-gradient(90deg, #6ad1ff 0%, #3a7afe 100%);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 24px #6ad1ff33;
+}
+
+.chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 36px;
+  margin-top: 36px;
+  justify-content: flex-start;
+}
+
+/* Анимация появления карточек главы */
+.chapter-card {
+  background: rgba(34, 36, 60, 0.98);
+  border-radius: 20px;
+  width: 230px;
+  padding: 18px 14px 22px 14px;
+  text-align: center;
+  box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.10);
+  transition: transform 0.18s, box-shadow 0.18s;
+  position: relative;
+  border: 1.5px solid #23243a;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: cardFadeIn 0.6s cubic-bezier(.23,1.01,.32,1) forwards;
+}
+.chapter-card:nth-child(1) { animation-delay: 0.05s; }
+.chapter-card:nth-child(2) { animation-delay: 0.10s; }
+.chapter-card:nth-child(3) { animation-delay: 0.15s; }
+.chapter-card:nth-child(4) { animation-delay: 0.20s; }
+.chapter-card:nth-child(5) { animation-delay: 0.25s; }
+.chapter-card:nth-child(6) { animation-delay: 0.30s; }
+
+@keyframes cardFadeIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.chapter-card:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 8px 32px 0 rgba(58, 122, 254, 0.13);
+  border-color: #3a7afe;
+}
+
+.chapter-card img {
+  width: 100%;
+  border-radius: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 12px #0006;
+  background: #23243a;
+}
+
+.chapter-card h3 {
+  margin: 10px 0 14px 0;
+  font-size: 1.18em;
+  color: #6ad1ff;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.chapter-card button {
+  background: linear-gradient(90deg, #3a7afe 0%, #6ad1ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 10px 34px;
+  font-size: 1.05em;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 6px;
+  box-shadow: 0 2px 8px #3a7afe33;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.chapter-card button:hover {
+  background: linear-gradient(90deg, #6ad1ff 0%, #3a7afe 100%);
+  transform: scale(1.07);
+}
+
+.reader {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 60% 0%, #23243a 60%, #181926 100%);
+  z-index: 1000;
+  overflow-y: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.4s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.reader-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 36px 0 0 0;
+}
+
+/* Плавное появление страниц манги */
+#pages {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pages img {
+  display: block;
+  margin: 28px auto;
+  max-width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px 0 rgba(31, 38, 135, 0.13);
+  background: #23243a;
+  transition: box-shadow 0.2s;
+  opacity: 0;
+  transform: translateY(40px) scale(0.98);
+  animation: pageAppear 0.7s cubic-bezier(.23,1.01,.32,1) forwards;
+}
+#pages img:nth-child(1) { animation-delay: 0.05s; }
+#pages img:nth-child(2) { animation-delay: 0.10s; }
+#pages img:nth-child(3) { animation-delay: 0.15s; }
+#pages img:nth-child(4) { animation-delay: 0.20s; }
+#pages img:nth-child(5) { animation-delay: 0.25s; }
+#pages img:nth-child(6) { animation-delay: 0.30s; }
+
+@keyframes pageAppear {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+#pages img:hover {
+  box-shadow: 0 8px 32px 0 rgba(58, 122, 254, 0.13);
+}
+
+.nav-btn {
+  background: linear-gradient(90deg, #3a7afe 0%, #6ad1ff 100%);
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 14px 36px;
+  font-size: 1.13em;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 0;
+  margin-top: 0;
+  box-shadow: 0 2px 8px #3a7afe33;
+  transition: background 0.2s, transform 0.15s;
+}
+
+.nav-btn:hover {
+  background: linear-gradient(90deg, #6ad1ff 0%, #3a7afe 100%);
+  transform: scale(1.07);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  background: #23243a;
+}
+::-webkit-scrollbar-thumb {
+  background: #2e3350;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a7afe;
+}
+
+@media (max-width: 1100px) {
+  .container {
+    max-width: 100vw;
+    padding: 24px 4vw 0 4vw;
+  }
+  .info {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .poster img {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+    display: block;
+  }
+  .desc {
+    padding: 18px 10px;
+  }
+  .reader-inner, #pages {
+    max-width: 100vw;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+/* --- Мобильная адаптация --- */
+@media (max-width: 900px) {
+  .info {
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 24px 10px 24px 10px;
+    border-radius: 20px;
+  }
+  .poster img {
+    width: 180px;
+    max-width: 60vw;
+  }
+  .desc {
+    padding: 0;
+    align-items: center;
+    text-align: center;
+  }
+  .desc h1 {
+    font-size: 2em;
+  }
+  .desc em {
+    font-size: 1em;
+  }
+  .buttons {
+    justify-content: center;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 12px 2vw 0 2vw;
+  }
+  .info {
+    padding: 12px 2vw 12px 2vw;
+    border-radius: 12px;
+  }
+  .poster img {
+    width: 120px;
+    max-width: 90vw;
+  }
+  .desc h1 {
+    font-size: 1.3em;
+  }
+  .desc p {
+    font-size: 1em;
+  }
+  .buttons button,
+  .buttons a > button {
+    padding: 10px 18px;
+    font-size: 1em;
+  }
+}
