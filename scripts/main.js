@@ -22,6 +22,7 @@ const chapters = [
   { num: 16, title: "Глава 16. Любовь и отчаяние", cover: "ch/16/1.jpg", pages: 19 },
   { num: 17, title: "Глава 17. То, что нас связывает", cover: "ch/17/1.jpg", pages: 18 },
   { num: 18, title: "Глава 18. Рыцарь Локонов", cover: "ch/18/1.jpg", pages: 19 },
+  { num: 19, title: "Глава 19. Решено", cover: "ch/19/1.jpg", pages: 19 },
 ];
 
 let currentChapterIndex = 0;
@@ -72,6 +73,11 @@ function renderChapter() {
     const img = document.createElement('img');
     img.src = `ch/${ch.num}/${i}.jpg`;
     img.alt = `Страница ${i}`;
+    // Если .jpg не найден, пробуем .jpeg
+    img.onerror = function() {
+      this.onerror = null;
+      this.src = `ch/${ch.num}/${i}.jpeg`;
+    };
     pagesDiv.appendChild(img);
   }
   document.getElementById('prev-chapter').style.visibility = currentChapterIndex > 0 ? 'visible' : 'hidden';
