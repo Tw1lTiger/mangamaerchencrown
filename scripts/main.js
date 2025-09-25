@@ -26,6 +26,49 @@ const chapters = [
 ];
 
 let currentChapterIndex = 0;
+let currentPage = 1;
+
+// --- Закладки и история ---
+function saveBookmark() {
+  const bookmark = {
+    chapter: currentChapterIndex,
+    page: currentPage
+  };
+  localStorage.setItem('bookmark', JSON.stringify(bookmark));
+  alert('Закладка сохранена!');
+}
+
+function loadBookmark() {
+  const data = localStorage.getItem('bookmark');
+  if (data) {
+    const { chapter, page } = JSON.parse(data);
+    openChapter(chapter, page);
+  } else {
+    alert('Закладка не найдена.');
+  }
+}
+
+function addToHistory(chapterIdx) {
+  let history = JSON.parse(localStorage.getItem('history') || '[]');
+  // Удаляем если уже есть
+  history = history.filter(h => h !== chapterIdx);
+  history.unshift(chapterIdx);
+  if (history.length > 10) history = history.slice(0, 10);
+  localStorage.setItem('history', JSON.stringify(history));
+}
+
+function showHistory() {
+  let history = JSON.parse(localStorage.getItem('history') || '[]');
+  if (!history.length) {
+    alert('История пуста.');
+    return;
+  }
+  let msg = 'История чтения (последние 10):\n';
+  history.forEach(idx => {
+    if (chapters[idx]) msg += `- ${chapters[idx].title}\n`;
+  });
+  alert(msg);
+}
 
 // Показать список глав
 function showChapters() {
@@ -45,20 +88,37 @@ function showChapters() {
   });
 }
 
-// Запуск чтения с первой главы или с последней прочитанной
+// --- Сохранять последнюю главу и страницу при закрытии сайта ---
+window.addEventListener('beforeunload', function() {
+  localStorage.setItem('lastRead', JSON.stringify({ chapter: currentChapterIndex, page: currentPage }));
+});
+
+// --- Кнопка «Читать» ведёт на последнюю страницу ---
 function startReading() {
   let idx = 0;
-  const saved = localStorage.getItem('lastChapterIndex');
-  if (saved !== null && chapters[saved]) {
-    idx = parseInt(saved, 10);
+  let page = 1;
+  const lastRead = localStorage.getItem('lastRead');
+  if (lastRead) {
+    const { chapter, page: savedPage } = JSON.parse(lastRead);
+    if (chapters[chapter]) {
+      idx = chapter;
+      page = savedPage || 1;
+    }
+  } else {
+    const saved = localStorage.getItem('lastChapterIndex');
+    if (saved !== null && chapters[saved]) {
+      idx = parseInt(saved, 10);
+    }
   }
-  openChapter(idx);
+  openChapter(idx, page);
 }
 
 // Открыть выбранную главу
-function openChapter(idx) {
+function openChapter(idx, page = 1) {
   currentChapterIndex = idx;
+  currentPage = page;
   localStorage.setItem('lastChapterIndex', idx);
+  addToHistory(idx);
   document.getElementById('chapters').innerHTML = '';
   document.getElementById('reader').style.display = 'flex';
   document.body.style.overflow = 'hidden';
@@ -73,11 +133,17 @@ function renderChapter() {
     const img = document.createElement('img');
     img.src = `ch/${ch.num}/${i}.jpg`;
     img.alt = `Страница ${i}`;
+    img.className = 'manga-page';
+    img.onclick = () => {
+      currentPage = i;
+      saveBookmark();
+    };
     // Если .jpg не найден, пробуем .jpeg
     img.onerror = function() {
       this.onerror = null;
       this.src = `ch/${ch.num}/${i}.jpeg`;
     };
+    if (i === currentPage) img.style.border = '3px solid #6ad1ff';
     pagesDiv.appendChild(img);
   }
   document.getElementById('prev-chapter').style.visibility = currentChapterIndex > 0 ? 'visible' : 'hidden';
@@ -107,6 +173,105 @@ function nextChapter() {
     window.scrollTo(0, 0);
   }
 }
+
+// --- Кнопка «Закладка» на странице главы ---
+function addBookmarkButton() {
+  let reader = document.getElementById('reader');
+  if (!reader) return;
+  let oldBtn = document.getElementById('bookmark-btn');
+  if (oldBtn) oldBtn.remove();
+  let btn = document.createElement('button');
+  btn.id = 'bookmark-btn';
+  btn.className = 'nav-btn';
+  btn.innerText = 'Закладка';
+  btn.style.margin = '12px auto 0 auto';
+  btn.onclick = saveBookmark;
+  reader.insertBefore(btn, reader.children[1]);
+}
+
+// Вставлять кнопку при открытии главы
+const origOpenChapter = openChapter;
+openChapter = function(idx, page = 1) {
+  origOpenChapter(idx, page);
+  setTimeout(addBookmarkButton, 0);
+};
+
+// --- Скачать главу (zip) ---
+function loadJSZipIfNeeded(cb) {
+  if (window.JSZip) return cb();
+  const script = document.createElement('script');
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  script.onload = cb;
+  document.head.appendChild(script);
+}
+
+function downloadCurrentChapterZip() {
+  loadJSZipIfNeeded(async () => {
+    const ch = chapters[currentChapterIndex];
+    const zip = new JSZip();
+    let count = 0;
+    for (let i = 1; i <= ch.pages; i++) {
+      let urlJpg = `ch/${ch.num}/${i}.jpg`;
+      let urlJpeg = `ch/${ch.num}/${i}.jpeg`;
+      try {
+        const resp = await fetch(urlJpg);
+        if (resp.ok) {
+          const blob = await resp.blob();
+          zip.file(`${i}.jpg`, blob);
+          count++;
+          continue;
+        }
+      } catch {}
+      try {
+        const resp = await fetch(urlJpeg);
+        if (resp.ok) {
+          const blob = await resp.blob();
+          zip.file(`${i}.jpeg`, blob);
+          count++;
+        }
+      } catch {}
+    }
+    if (count === 0) {
+      alert('Не удалось найти страницы главы для скачивания.');
+      return;
+    }
+    const content = await zip.generateAsync({type: 'blob'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(content);
+    a.download = `${ch.title.replace(/[^a-zA-Z0-9а-яА-ЯёЁ _.-]/g, '_')}.zip`;
+    a.click();
+  });
+}
+
+// --- Переключение светлой/тёмной темы ---
+function applyTheme(theme) {
+  const isLight = theme === 'light';
+  document.body.classList.toggle('light', isLight);
+  // Главные блоки
+  const info = document.querySelector('.info');
+  if (info) info.classList.toggle('light', isLight);
+  document.querySelectorAll('.poster img').forEach(img => img.classList.toggle('light', isLight));
+  document.querySelectorAll('.desc').forEach(d => d.classList.toggle('light', isLight));
+  document.querySelectorAll('.chapter-card').forEach(card => card.classList.toggle('light', isLight));
+  document.querySelectorAll('.buttons button, .buttons a > button, .nav-btn').forEach(btn => btn.classList.toggle('light', isLight));
+}
+
+function toggleTheme() {
+  let theme = localStorage.getItem('theme') === 'light' ? 'dark' : 'light';
+  localStorage.setItem('theme', theme);
+  applyTheme(theme);
+  // Меняем иконку
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+}
+
+// Применять тему при загрузке
+window.addEventListener('DOMContentLoaded', function() {
+  let theme = localStorage.getItem('theme') || 'dark';
+  applyTheme(theme);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = theme === 'light' ? '🌙' : '☀️';
+});
 
 // Показать главы при загрузке
 window.onload = showChapters;

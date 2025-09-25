@@ -1,0 +1,21 @@
+{
+  "name": "Корона Мёрхен",
+  "short_name": "Мёрхен",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#23243a",
+  "theme_color": "#23243a",
+  "description": "Манга Корона Мёрхен — читать онлайн и офлайн.",
+  "icons": [
+    {
+      "src": "img/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "img/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

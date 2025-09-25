@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <title>Корона Мёрхен</title>
   <link rel="stylesheet" href="styles/main.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#23243a">
+  <link rel="apple-touch-icon" href="img/pwa-icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="img/pwa-icon-192.png">
 </head>
 <body>
   <div class="container">
@@ -21,6 +25,7 @@
           Рапунцель - юная девушка, которая живет на вершине высокой башни и ничего не знает о внешнем мире. Однажды она встречает мальчика по имени Микель, который забирается на башню, и их судьба изменить мир начинает разворачиваться!
         </p>
         <div class="buttons">
+          <button id="theme-toggle" onclick="toggleTheme()">☀️ / 🌙</button>
           <button onclick="startReading()">Читать</button>
           <a href="https://t.me/tw1lti" target="_blank"><button>Телеграм</button></a>
         </div>
@@ -33,6 +38,7 @@
       <button class="nav-btn" id="prev-chapter" onclick="prevChapter()">← Предыдущая глава</button>
       <button class="nav-btn" onclick="closeReader()">Назад к списку</button>
       <button class="nav-btn" id="next-chapter" onclick="nextChapter()">Следующая глава →</button>
+      <button class="nav-btn" id="download-zip" onclick="downloadCurrentChapterZip()">Скачать главу (zip)</button>
     </div>
     <div id="pages"></div>
     <div class="reader-inner">
@@ -42,5 +48,12 @@
     </div>
   </div>
   <script src="scripts/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js');
+      });
+    }
+  </script>
 </body>
 </html>
