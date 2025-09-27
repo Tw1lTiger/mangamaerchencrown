@@ -23,6 +23,7 @@ const chapters = [
   { num: 17, title: "Глава 17. То, что нас связывает", cover: "ch/17/1.jpg", pages: 18 },
   { num: 18, title: "Глава 18. Рыцарь Локонов", cover: "ch/18/1.jpg", pages: 19 },
   { num: 19, title: "Глава 19. Решено", cover: "ch/19/1.jpg", pages: 19 },
+  { num: 20, title: "Глава 20. Золушка", cover: "ch/20/1.jpg", pages: 19 },
 ];
 
 let currentChapterIndex = 0;
